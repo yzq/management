@@ -1,26 +1,39 @@
-<html>
-    <head>
-        <title>Startbuzz Coffee</title>
-        <style type="text/css">
-            body {
-                background-color: #d2b48c;
-                margin-left: 20%;
-                margin-right: 20%;
-                border: 2px dotted black;
-                padding: 10px 10px 10px 10px;
-                font-family: sans-serif;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Startbuzz Coffee Beverages</h1>
-        <h2>House Blend, $1.49</h2>
-        <p>A smooth, mild blend of coffees from Mexico, Bolivia and Guatemala</p>
-        <h2>Mocha Cafe Latte, $2.35</h2>
-        <p>Espresso, steamed milk and chocolate syrup.</p>
-        <h2>Cappuccino, $1.89</h2>
-        <p>A mixture of espresso, steamed milk and foam.</p>
-        <h2>Chai Tea, $1.85</h2>
-        <p>A spicy drink made with black tea, spices, milk and honey</p>
-    </body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Management{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>Hello</h1>
+</div>
+<div class="post-body">
+    <table>
+        <tr>
+            <th>用途</th>
+            <th>模式</th>
+            <th>维护IP</th>
+            <th>用户名</th>
+            <th>密码</th>
+            <th></th>
+        </tr>
+        <tr>
+            <td rowspan="4">模拟线</td>
+        </tr>
+        {% for element in elements %}
+            <tr>
+                <td>{{ element.type.name }} </td>
+                <td>{{ element.ip }} </td>
+                <td>{{ element.username }} </td>
+                <td>{{ element.password }} </td>
+                <td>
+                    <a class="btn btn-default"
+                       href="{{ url_for('main.edit_element', id=element.id) }}">Edit</a>
+                    <a class="btn btn-default"
+                       href="{{ url_for('main.delete_element', id=element.id) }}">Delete</a>
+                </td>
+             </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock %}

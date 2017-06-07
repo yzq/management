@@ -5,7 +5,7 @@ class Type(db.Model):
     __tablename__ = 'types'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-    elements = db.relationship('Element', backref='element', lazy='dynamic')
+    elements = db.relationship('Element', backref='type', lazy='dynamic')
 
     @staticmethod
     def insert_types():
@@ -24,7 +24,7 @@ class Type(db.Model):
 class Element(db.Model):
     __tablename__ = 'elements'
     id = db.Column(db.Integer, primary_key=True)
-    ip = db.Column(db.String(64), unique=True)
+    ip = db.Column(db.String(32), unique=True)
     username = db.Column(db.String(64))
     password = db.Column(db.String(64))
     status = db.Column(db.Boolean, default=False)

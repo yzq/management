@@ -3,7 +3,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-
+    SECRET_KEY = os.getenv('SECRET_KEY') or 'haard to guess string'
     @staticmethod
     def init_app(app):
         pass
