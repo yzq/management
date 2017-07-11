@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}eAPP 环境信息{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h3>eAPP</h3>
+</div>
+<div class="post-body">
+    <table>
+        <tr>
+            <th class="center">MDC IP</th>
+            <th colspan="2" class="center">MDC 账号</th>
+            <!--<th class="center">MDC 密码</th>-->
+            <th class="center">UDC IP</th>
+            <th colspan="2" class="center">UDC 账号</th>
+            <!--<th class="center">UDC 密码</th>-->
+            <th colspan="2" class="center">Linux 账号</th>
+            <!--<th class="center">Root 密码</th>-->
+            <!--<th class="center">ubp 密码</th>-->
+            <th class="center">ubp 密码</th>
+            <th class="center">编辑</th>
+        </tr>
+
+        {% for eapp in eapps %}
+            <tr>
+                <td class="center">{{ eapp.mdc_ip }} </td>
+                <td class="center">{{ eapp.mdc_username }}</td>
+                <td class="center">{{ eapp.mdc_password }} </td>
+                <td class="center">{{ eapp.udc_ip }} </td>
+                <td class="center">{{ eapp.udc_username  }} </td>
+                <td class="center">{{ eapp.udc_password }} </td>
+                <td class="center">{{ eapp.root_username  }} </td>
+                <td class="center">{{ eapp.root_password }} </td>
+                <!--<td class="center">{{ eapp.ubp_username  }} </td>-->
+                <td class="center">{{ eapp.ubp_password }} </td>
+                <td>
+                    <div>
+                    <a class="btn btn-link center"
+                       href="{{ url_for('main.edit_eapp', id=eapp.id) }}">Edit</a>
+                    <a class="btn btn-link center"
+                       href="{{ url_for('main.delete_eapp', id=eapp.id) }}">Delete</a>
+                    </div>
+                 </td>
+            </tr>
+        {% endfor %}
+
+
+    </table>
+    <div id="btn-add">
+        <a class="btn btn-primary" href="{{ url_for('main.add_eapp') }}">Add</a>
+    </div>
+</div>
+
+{% endblock %}

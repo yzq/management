@@ -1,39 +1,67 @@
 {% extends "base.html" %}
 
-{% block title %}Management{% endblock %}
+{% block title %}eSCN230 环境信息{% endblock %}
 
 {% block page_content %}
 <div class="page-header">
-    <h1>Hello</h1>
+    <h3>eSCN230</h3>
 </div>
 <div class="post-body">
     <table>
         <tr>
-            <th>用途</th>
-            <th>模式</th>
-            <th>维护IP</th>
-            <th>用户名</th>
-            <th>密码</th>
-            <th></th>
+            <th class="center">环境</th>
+            <th class="center">模式</th>
+            <th class="center">维护IP</th>
+            <th class="center">用户名</th>
+            <th class="center">密码</th>
+            <th class="center">对接PC</th>
+            <th class="center">编辑</th>
         </tr>
+        {% if simu_num %}
         <tr>
-            <td rowspan="4">模拟线</td>
+            <td rowspan={{ simu_num+1 }}>模拟线</td>
         </tr>
-        {% for element in elements %}
-            <tr>
-                <td>{{ element.type.name }} </td>
-                <td>{{ element.ip }} </td>
-                <td>{{ element.username }} </td>
-                <td>{{ element.password }} </td>
-                <td>
-                    <a class="btn btn-default"
-                       href="{{ url_for('main.edit_element', id=element.id) }}">Edit</a>
-                    <a class="btn btn-default"
-                       href="{{ url_for('main.delete_element', id=element.id) }}">Delete</a>
-                </td>
-             </tr>
+        {% for element in simulation_elements %}
+                <tr>
+                    <td class="center">{{ element.type.name }} </td>
+                    <td class="center">{{ element.ip }} </td>
+                    <td class="center">{{ element.username }} </td>
+                    <td class="center">{{ element.password }} </td>
+                    <td class="center">{{ element.pc_ip }} </td>
+                    <td>
+                        <a class="btn btn-link"
+                           href="{{ url_for('main.edit_element', id=element.id) }}">Edit</a>
+                        <a class="btn btn-link"
+                           href="{{ url_for('main.delete_element', id=element.id) }}">Delete</a>
+                     </td>
+                </tr>
         {% endfor %}
+        {% endif %}
+
+        {% if real_num %}
+        <tr>
+            <td rowspan={{ real_num+1 }}>真实线</td>
+        </tr>
+        {% for element in real_elements %}
+                <tr>
+                    <td class="center">{{ element.type.name }} </td>
+                    <td class="center">{{ element.ip }} </td>
+                    <td class="center">{{ element.username }} </td>
+                    <td class="center">{{ element.password }} </td>
+                    <td class="center">{{ element.pc_ip }} </td>
+                    <td>
+                        <a class="btn btn-link"
+                           href="{{ url_for('main.edit_element', id=element.id) }}">Edit</a>
+                        <a class="btn btn-link"
+                           href="{{ url_for('main.delete_element', id=element.id) }}">Delete</a>
+                     </td>
+                </tr>
+        {% endfor %}
+        {% endif %}
     </table>
+    <div id="btn-add">
+        <a class="btn btn-primary" href="{{ url_for('main.add_element') }}">Add</a>
+    </div>
 </div>
 
 {% endblock %}

@@ -1,7 +1,7 @@
 
 {% extends "bootstrap/base.html" %}
 
-{% block title %}Management{% endblock %}
+{% block title %}环境规划表{% endblock %}
 
 {% block head %}
 {{ super() }}
@@ -18,15 +18,30 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ url_for('main.add_element') }}">Add</a>
+            <a class="navbar-brand" href="{{ url_for('main.index') }}">Home</a>
+
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="{{ url_for('main.index') }}">eSCN230</a></li>
+                <li>
+                    <!--<a class="navbar-brand" href="{{ url_for('main.index') }}">eCNS210</a>-->
+                    <a href="{{ url_for('main.index') }}">eSCN230</a>
+
+                </li>
+                <li>
+                    <a href="{{ url_for('main.ecns') }}">eCNS210</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('main.eapp') }}">eAPP</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('main.index') }}">eNodeB</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('main.index') }}">UE</a>
+                </li>
 
             </ul>
-
-
         </div>
     </div>
 </div>
