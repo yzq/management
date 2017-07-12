@@ -1,8 +1,8 @@
 from flask import render_template, session, url_for, flash
 from werkzeug.utils import redirect
 
-from app.main.forms import EditForm, EditeCNSForm, EditeAPPForm
-from app.models import Element, Type, Ecns, Eapp
+from app.main.forms import EditForm, EditeCNSForm, EditeAPPForm, EditeNBForm
+from app.models import Element, Type, Ecns, Eapp, Frequency, Enb
 from . import main
 from .. import db
 
@@ -94,7 +94,7 @@ def ecns():
 @main.route('/edit-ecns/<int:id>', methods=['GET', 'POST'])
 def edit_ecns(id):
     ecns = Ecns.query.get_or_404(id)
-    form = EditeCNSForm()
+    form = EditeCNSForm(ecns)
     if form.validate_on_submit():
         ecns.ip = form.ip.data
         ecns.username = form.username.data
@@ -156,7 +156,7 @@ def add_eapp():
 @main.route('/edit-eapp/<int:id>', methods=['GET', 'POST'])
 def edit_eapp(id):
     eapp = Eapp.query.get_or_404(id)
-    form = EditeAPPForm()
+    form = EditeAPPForm(eapp)
     if form.validate_on_submit():
         eapp.mdc_ip = form.mdc_ip.data
         eapp.mdc_username = form.mdc_username.data
@@ -191,3 +191,61 @@ def delete_eapp(id):
     db.session.delete(eapp)
     db.session.commit()
     return redirect(url_for('.eapp'))
+
+@main.route('/enb', methods=['GET', 'POST'])
+def enb():
+    enbs = Enb.query.order_by(Enb.ip).all()
+    # simulation_ecns = Ecns.query.filter(Ecns.usage == 'simulation').all()
+    # simulation_num = len(simulation_ecns)
+    # real_ecns = Ecns.query.filter(Ecns.usage == 'real').all()
+    # real_num = len(real_ecns)
+    return render_template('enb.html', enbs=enbs)
+
+
+@main.route('/add-enb', methods=['GET', 'POST'])
+def add_enb():
+    form = EditeNBForm()
+    if form.validate_on_submit():
+        enb = Enb(ip=form.ip.data, username=form.username.data,
+                  password=form.password.data, frequency=Frequency.query.get(form.frequency.data),
+                  cell_id1=form.cell_id1.data, cell_id2=form.cell_id2.data)
+        db.session.add(enb)
+        db.session.commit()
+        flash('Add enodeb successfully')
+        return redirect(url_for('.enb'))
+    return render_template('add_enb.html', form=form)
+
+
+@main.route('/edit-enb/<int:id>', methods=['GET', 'POST'])
+def edit_enb(id):
+    enb = Enb.query.get_or_404(id)
+    form = EditeNBForm()
+    if form.validate_on_submit():
+        enb.ip = form.ip.data
+        enb.username = form.username.data
+        enb.password = form.password.data
+        enb.frequency = Frequency.query.get(form.frequency.data)
+        enb.cell_id1 = form.cell_id1.data
+        enb.cell_id2 = form.cell_id2.data
+        db.session.add(enb)
+        db.session.commit()
+        flash('The enodeb has been updated')
+        return redirect(url_for('.index'))
+    form.ip.data = enb.ip
+    form.username.data = enb.username
+    form.password.data = enb.password
+    form.frequency.data = enb.frequency_id
+    form.cell_id1 = enb.cell_id1
+    form.cell_id2 = enb.cell_id2
+    return render_template('add_enb.html', form=form)
+
+
+@main.route('/delete-enb/<int:id>', methods=['GET', 'POST'])
+def delete_enb(id):
+    enb = Enb.query.get_or_404(id)
+    db.session.delete(enb)
+    db.session.commit()
+    return redirect(url_for('.enb'))
+
+
+

@@ -67,5 +67,40 @@ class Eapp(db.Model):
         return '<Eapp %r>' % self.name
 
 
+class Frequency(db.Model):
+    __tablename__ = 'frequency'
+    id = db.Column(db.Integer, primary_key=True)
+    number = db.Column(db.String(64), unique=True)
+    enbs = db.relationship('Enb', backref='frequency', lazy='dynamic')
+
+    @staticmethod
+    def insert_frequency():
+        frequency_list = ['400M', '800M', '1.4G', '1.8G', '2.3G']
+        for f in frequency_list:
+            number = Frequency.query.filter_by(number=f).first()
+            if number is None:
+                number = Frequency(number=f)
+            db.session.add(number)
+        db.session.commit()
+
+    def __repr__(self):
+        return '<Frequency %r>' % self.frequency
+
+
+class Enb(db.Model):
+    __tablename__ = 'enbs'
+    id = db.Column(db.Integer, primary_key=True)
+    ip = db.Column(db.String(32), unique=True)
+    username = db.Column(db.String(64))
+    password = db.Column(db.String(64))
+    # status = db.Column(db.Boolean, default=False)
+    frequency_id = db.Column(db.Integer, db.ForeignKey('frequency.id'))
+    cell_id1 = db.Column(db.String(32))
+    cell_id2 = db.Column(db.String(32))
+
+    def __repr__(self):
+        return '<Enb %r>' % self.ip
+
+
 
 

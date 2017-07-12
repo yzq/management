@@ -2,7 +2,7 @@
 from flask_wtf import Form
 from wtforms import StringField, SelectField, SubmitField
 from wtforms.validators import Required, Length, ValidationError
-from app.models import Type, Element, Eapp
+from app.models import Type, Element, Eapp, Ecns, Frequency
 
 
 class EditForm(Form):
@@ -33,12 +33,14 @@ class EditeCNSForm(Form):
     pc_ip = StringField(u'对接PC')
     submit = SubmitField(u'提交')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, ecns, *args, **kwargs):
         super(EditeCNSForm, self).__init__(*args, **kwargs)
         self.usage.choices = [('simulation', u'模拟线'), ('real', u'真实线')]
+        self.ecns = ecns
 
     def validate_ip(self, field):
-        if Element.query.filter_by(ip=field.data).first():
+        if field.data != self.ecns.ip and \
+                Ecns.query.filter_by(ip=field.data).first():
             raise ValidationError("Ip already in use")
 
 
@@ -55,11 +57,31 @@ class EditeAPPForm(Form):
     ubp_password = StringField(u'ubp 密码', validators=[Required(), Length(1, 64)])
     submit = SubmitField(u'提交')
 
+    def __init__(self, eapp, *args, **kwargs):
+        super(EditeAPPForm, self).__init__(*args, **kwargs)
+        self.eapp = eapp
 
     def validate_mdc_ip(self, field):
-        if Eapp.query.filter_by(mdc_ip=field.data).first():
+        if self.eapp.mdc_ip != field.data and \
+                Eapp.query.filter_by(mdc_ip=field.data).first():
             raise ValidationError("MDC IP already in use")
 
-    # def validate_udc_ip(self, field):
-    #     if Eapp.query.filter_by(udc_ip=field.data).first():
-    #         raise ValidationError("UDC IP already in use")
+    def validate_udc_ip(self, field):
+        if self.eapp.udc_ip != field.data and \
+                Eapp.query.filter_by(udc_ip=field.data).first():
+            raise ValidationError("UDC IP already in use")
+
+
+class EditeNBForm(Form):
+    ip = StringField(u'维护 IP', validators=[Required(), Length(1, 32)])
+    username = StringField(u'用户名', validators=[Required(), Length(1, 64)])
+    password = StringField(u'密码', validators=[Required(), Length(1, 64)])
+    frequency = SelectField(u'频率', coerce=int)
+    cell_id1 = StringField(u'小区 ID1')
+    cell_id2 = StringField(u'小区 ID2')
+    submit = SubmitField(u'提交')
+
+    def __init__(self, *args, **kwargs):
+        super(EditeNBForm, self).__init__(*args, **kwargs)
+        self.frequency.choices = [(frequency.id, frequency.number)
+                                  for frequency in Frequency.query.order_by(Frequency.number).all()]
