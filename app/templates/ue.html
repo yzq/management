@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}UE 环境信息{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h3>UE</h3>
+</div>
+<div class="post-body">
+    <table>
+        <tr>
+            <th class="center">IMSI</th>
+            <th class="center">OP</th>
+            <th class="center">Ki</th>
+            <th class="center">频段</th>
+            <th class="center">编辑</th>
+        </tr>
+
+        {% for ue in ues %}
+            <tr>
+                <td class="center">{{ ue.imsi }} </td>
+                <td class="center">{{ ue.op }}</td>
+                <td class="center">{{ ue.ki }} </td>
+                <td class="center">{{ ue.frequency.number }} </td>
+                <td>
+                    <div>
+                    <a class="btn btn-link center"
+                       href="{{ url_for('main.edit_ue', id=ue.id) }}">Edit</a>
+                    <a class="btn btn-link center"
+                       href="{{ url_for('main.delete_ue', id=ue.id) }}">Delete</a>
+                    </div>
+                 </td>
+            </tr>
+        {% endfor %}
+
+
+    </table>
+    <div id="btn-add">
+        <a class="btn btn-primary" href="{{ url_for('main.add_ue') }}">Add</a>
+    </div>
+</div>
+
+{% endblock %}

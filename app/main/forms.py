@@ -85,3 +85,16 @@ class EditeNBForm(Form):
         super(EditeNBForm, self).__init__(*args, **kwargs)
         self.frequency.choices = [(frequency.id, frequency.number)
                                   for frequency in Frequency.query.order_by(Frequency.number).all()]
+
+
+class EditUEForm(Form):
+    imsi = StringField(u'IMSI', validators=[Required(), Length(1, 32)])
+    op = StringField(u'OP', validators=[Required(), Length(1, 64)])
+    ki = StringField(u'Ki', validators=[Required(), Length(1, 64)])
+    frequency = SelectField(u'频率', coerce=int)
+    submit = SubmitField(u'提交')
+
+    def __init__(self, *args, **kwargs):
+        super(EditUEForm, self).__init__(*args, **kwargs)
+        self.frequency.choices = [(frequency.id, frequency.number)
+                                  for frequency in Frequency.query.order_by(Frequency.number).all()]

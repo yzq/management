@@ -72,6 +72,7 @@ class Frequency(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     number = db.Column(db.String(64), unique=True)
     enbs = db.relationship('Enb', backref='frequency', lazy='dynamic')
+    ues = db.relationship('UE', backref='frequency', lazy='dynamic')
 
     @staticmethod
     def insert_frequency():
@@ -100,6 +101,15 @@ class Enb(db.Model):
 
     def __repr__(self):
         return '<Enb %r>' % self.ip
+
+
+class UE(db.Model):
+    __tablename__ = 'ues'
+    id = db.Column(db.Integer, primary_key=True)
+    imsi = db.Column(db.String(32), unique=True)
+    ki = db.Column(db.String(32))
+    op = db.Column(db.String(64))
+    frequency_id = db.Column(db.Integer, db.ForeignKey('frequency.id'))
 
 
 

@@ -1,8 +1,8 @@
 from flask import render_template, session, url_for, flash
 from werkzeug.utils import redirect
 
-from app.main.forms import EditForm, EditeCNSForm, EditeAPPForm, EditeNBForm
-from app.models import Element, Type, Ecns, Eapp, Frequency, Enb
+from app.main.forms import EditForm, EditeCNSForm, EditeAPPForm, EditeNBForm, EditUEForm
+from app.models import Element, Type, Ecns, Eapp, Frequency, Enb, UE
 from . import main
 from .. import db
 
@@ -230,7 +230,7 @@ def edit_enb(id):
         db.session.add(enb)
         db.session.commit()
         flash('The enodeb has been updated')
-        return redirect(url_for('.index'))
+        return redirect(url_for('.enb'))
     form.ip.data = enb.ip
     form.username.data = enb.username
     form.password.data = enb.password
@@ -246,6 +246,57 @@ def delete_enb(id):
     db.session.delete(enb)
     db.session.commit()
     return redirect(url_for('.enb'))
+
+
+@main.route('/add-ue', methods=['GET', 'POST'])
+def add_ue():
+    form = EditUEForm()
+    if form.validate_on_submit():
+        ue = UE(imsi=form.imsi.data, op=form.op.data,
+                  ki=form.ki.data, frequency=Frequency.query.get(form.frequency.data))
+        db.session.add(ue)
+        db.session.commit()
+        flash('Add UE successfully')
+        return redirect(url_for('.ue'))
+    return render_template('add_ue.html', form=form)
+
+
+@main.route('/ue', methods=['GET', 'POST'])
+def ue():
+    ues = UE.query.order_by(UE.frequency_id).all()
+    # simulation_ecns = Ecns.query.filter(Ecns.usage == 'simulation').all()
+    # simulation_num = len(simulation_ecns)
+    # real_ecns = Ecns.query.filter(Ecns.usage == 'real').all()
+    # real_num = len(real_ecns)
+    return render_template('ue.html', ues=ues)
+
+
+@main.route('/edit-ue/<int:id>', methods=['GET', 'POST'])
+def edit_ue(id):
+    ue = UE.query.get_or_404(id)
+    form = EditUEForm()
+    if form.validate_on_submit():
+        ue.imsi = form.imsi.data
+        ue.op = form.op.data
+        ue.ki = form.ki.data
+        ue.frequency = Frequency.query.get(form.frequency.data)
+        db.session.add(ue)
+        db.session.commit()
+        flash('The enodeb has been updated')
+        return redirect(url_for('.ue'))
+    form.imsi.data = ue.imsi
+    form.op.data = ue.op
+    form.ki.data = ue.ki
+    form.frequency.data = ue.frequency_id
+    return render_template('add_ue.html', form=form)
+
+
+@main.route('/delete-ue/<int:id>', methods=['GET', 'POST'])
+def delete_ue(id):
+    ue = UE.query.get_or_404(id)
+    db.session.delete(ue)
+    db.session.commit()
+    return redirect(url_for('.ue'))
 
 
 
