@@ -57,19 +57,19 @@ class EditeAPPForm(Form):
     ubp_password = StringField(u'ubp 密码', validators=[Required(), Length(1, 64)])
     submit = SubmitField(u'提交')
 
-    def __init__(self, eapp, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(EditeAPPForm, self).__init__(*args, **kwargs)
-        self.eapp = eapp
 
-    def validate_mdc_ip(self, field):
-        if self.eapp.mdc_ip != field.data and \
-                Eapp.query.filter_by(mdc_ip=field.data).first():
-            raise ValidationError("MDC IP already in use")
 
-    def validate_udc_ip(self, field):
-        if self.eapp.udc_ip != field.data and \
-                Eapp.query.filter_by(udc_ip=field.data).first():
-            raise ValidationError("UDC IP already in use")
+    # def validate_mdc_ip(self, field):
+    #     if self.eapp.mdc_ip != field.data and \
+    #             Eapp.query.filter_by(mdc_ip=field.data).first():
+    #         raise ValidationError("MDC IP already in use")
+    #
+    # def validate_udc_ip(self, field):
+    #     if self.eapp.udc_ip != field.data and \
+    #             Eapp.query.filter_by(udc_ip=field.data).first():
+    #         raise ValidationError("UDC IP already in use")
 
 
 class EditeNBForm(Form):
@@ -99,6 +99,21 @@ class EditUEForm(Form):
         super(EditUEForm, self).__init__(*args, **kwargs)
         self.frequency.choices = [(frequency.id, frequency.number)
                                   for frequency in Frequency.query.order_by(Frequency.number).all()]
-
         self.model.choices = [(model.id, model.name)
-                              for model in UeModel.query.order_by(UeModel.name).all()]
+                              for model in UeModel.query.order_by(UeModel.name).all()
+                              if model.name != 'CPE' and model.name != 'TAU']
+
+
+class EditPsUeForm(EditUEForm):
+    ip = StringField(u'维护 IP', validators=[Required(), Length(1, 32)])
+    username = StringField(u'用户名', validators=[Required(), Length(1, 64)])
+    password = StringField(u'密码', validators=[Required(), Length(1, 64)])
+    submit = SubmitField(u'提交')
+
+    def __init__(self, *args, **kwargs):
+        super(EditPsUeForm, self).__init__(*args, **kwargs)
+        self.frequency.choices = [(frequency.id, frequency.number)
+                                  for frequency in Frequency.query.order_by(Frequency.number).all()]
+        self.model.choices = [(model.id, model.name)
+                              for model in UeModel.query.order_by(UeModel.name).all()
+                              if model.name == 'CPE' or model.name == 'TAU']

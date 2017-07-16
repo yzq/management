@@ -73,6 +73,7 @@ class Frequency(db.Model):
     number = db.Column(db.String(64), unique=True)
     enbs = db.relationship('Enb', backref='frequency', lazy='dynamic')
     ues = db.relationship('UE', backref='frequency', lazy='dynamic')
+    ps_ues = db.relationship('PsUe', backref='frequency', lazy='dynamic')
 
     @staticmethod
     def insert_frequency():
@@ -108,10 +109,11 @@ class UeModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
     ues = db.relationship('UE', backref='ue_model', lazy='dynamic')
+    ps_ues = db.relationship('PsUe', backref='ue_model', lazy='dynamic')
 
     @staticmethod
     def insert_models():
-        models = ['EP650', 'EP680', 'EP820']
+        models = ['EP650', 'EP680', 'EP820', 'TAU', 'CPE']
         for m in models:
             model = UeModel.query.filter_by(name=m).first()
             if model is None:
@@ -131,6 +133,20 @@ class UE(db.Model):
     imei = db.Column(db.String(64))
     frequency_id = db.Column(db.Integer, db.ForeignKey('frequency.id'))
     ue_model_id = db.Column(db.Integer, db.ForeignKey('ue_models.id'))
+
+
+class PsUe(db.Model):
+    __tablename__ = 'ps_ues'
+    id = db.Column(db.Integer, primary_key=True)
+    imsi = db.Column(db.String(32), unique=True)
+    ki = db.Column(db.String(32))
+    imei = db.Column(db.String(64))
+    frequency_id = db.Column(db.Integer, db.ForeignKey('frequency.id'))
+    ue_model_id = db.Column(db.Integer, db.ForeignKey('ue_models.id'))
+    ip = db.Column(db.String(32), unique=True)
+    username = db.Column(db.String(64))
+    password = db.Column(db.String(64))
+
 
 
 

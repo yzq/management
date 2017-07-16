@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}CPE/TAU 环境信息{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h3>CPE/TAU</h3>
+</div>
+<div class="post-body">
+    <table>
+        <tr>
+            <th class="center">型号</th>
+            <th class="center">IMSI</th>
+            <th class="center">IMEI</th>
+            <th class="center">Ki</th>
+            <th class="center">频段</th>
+            <th class="center">维护IP</th>
+            <th class="center">用户名</th>
+            <th class="center">密码</th>
+            <th class="center">编辑</th>
+        </tr>
+
+        {% for ue in ps_ues %}
+            <tr>
+                <td class="center">{{ ue.ue_model.name }} </td>
+                <td class="center">{{ ue.imsi }} </td>
+                <td class="center">{{ ue.imei }}</td>
+                <td class="center">{{ ue.ki }} </td>
+                <td class="center">{{ ue.frequency.number }} </td>
+                <td class="center">{{ ue.ip }}</td>
+                <td class="center">{{ ue.username }} </td>
+                <td class="center">{{ ue.password }} </td>
+                <td>
+                    <div>
+                    <a class="btn btn-link center"
+                       href="{{ url_for('main.edit_ue', id=ue.id) }}">Edit</a>
+                    <a class="btn btn-link center"
+                       href="{{ url_for('main.delete_ue', id=ue.id) }}">Delete</a>
+                    </div>
+                 </td>
+            </tr>
+        {% endfor %}
+
+
+    </table>
+    <div id="btn-add">
+        <a class="btn btn-primary" href="{{ url_for('main.add_ps_ue') }}">Add</a>
+    </div>
+</div>
+
+{% endblock %}

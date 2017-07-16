@@ -1,8 +1,8 @@
 from flask import render_template, session, url_for, flash
 from werkzeug.utils import redirect
 
-from app.main.forms import EditForm, EditeCNSForm, EditeAPPForm, EditeNBForm, EditUEForm
-from app.models import Element, Type, Ecns, Eapp, Frequency, Enb, UE, UeModel
+from app.main.forms import EditForm, EditeCNSForm, EditeAPPForm, EditeNBForm, EditUEForm, EditPsUeForm
+from app.models import Element, Type, Ecns, Eapp, Frequency, Enb, UE, UeModel, PsUe
 from . import main
 from .. import db
 
@@ -300,3 +300,63 @@ def delete_ue(id):
     db.session.delete(ue)
     db.session.commit()
     return redirect(url_for('.ue'))
+
+
+@main.route('/add-ps-ue', methods=['GET', 'POST'])
+def add_ps_ue():
+    form = EditPsUeForm()
+    if form.validate_on_submit():
+        ps_ue = PsUe(ue_model=UeModel.query.get(form.model.data), imsi=form.imsi.data, imei=form.imei.data,
+                     ki=form.ki.data, frequency=Frequency.query.get(form.frequency.data),
+                     ip=form.ip.data, username=form.username.data, password=form.password.data)
+        db.session.add(ps_ue)
+        db.session.commit()
+        flash('Add UE successfully')
+        return redirect(url_for('.ps_ue'))
+    return render_template('add_ps_ue.html', form=form)
+
+
+@main.route('/ps-ue', methods=['GET', 'POST'])
+def ps_ue():
+    ps_ues = PsUe.query.order_by(PsUe.frequency_id).all()
+    # simulation_ecns = Ecns.query.filter(Ecns.usage == 'simulation').all()
+    # simulation_num = len(simulation_ecns)
+    # real_ecns = Ecns.query.filter(Ecns.usage == 'real').all()
+    # real_num = len(real_ecns)
+    return render_template('ps_ue.html', ps_ues=ps_ues)
+
+
+@main.route('/edit-ps-ue/<int:id>', methods=['GET', 'POST'])
+def edit_ps_ue(id):
+    ps_ue = PsUe.query.get_or_404(id)
+    form = EditPsUeForm()
+    if form.validate_on_submit():
+        ps_ue.model = UeModel.query.get(form.model.data)
+        ps_ue.imsi = form.imsi.data
+        ps_ue.imei = form.imei.data
+        ps_ue.ki = form.ki.data
+        ps_ue.frequency = Frequency.query.get(form.frequency.data)
+        ps_ue.ip = form.ip.data
+        ps_ue.username = form.username.data
+        ps_ue.password = form.password.data
+        db.session.add(ps_ue)
+        db.session.commit()
+        flash('The enodeb has been updated')
+        return redirect(url_for('.ue'))
+    form.model.data = ps_ue.ue_model_id
+    form.imsi.data = ps_ue.imsi
+    form.imei.data = ps_ue.imei
+    form.ki.data = ps_ue.ki
+    form.frequency.data = ps_ue.frequency_id
+    form.ip.data = ps_ue.ip
+    form.username.data = ps_ue.username
+    form.password.data = ps_ue.password
+    return render_template('add_ps_ue.html', form=form)
+
+
+@main.route('/delete-ps-ue/<int:id>', methods=['GET', 'POST'])
+def delete_ps_ue(id):
+    ps_ue = PsUe.query.get_or_404(id)
+    db.session.delete(ps_ue)
+    db.session.commit()
+    return redirect(url_for('.ps_ue'))
