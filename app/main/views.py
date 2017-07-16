@@ -2,7 +2,7 @@ from flask import render_template, session, url_for, flash
 from werkzeug.utils import redirect
 
 from app.main.forms import EditForm, EditeCNSForm, EditeAPPForm, EditeNBForm, EditUEForm
-from app.models import Element, Type, Ecns, Eapp, Frequency, Enb, UE
+from app.models import Element, Type, Ecns, Eapp, Frequency, Enb, UE, UeModel
 from . import main
 from .. import db
 
@@ -192,6 +192,7 @@ def delete_eapp(id):
     db.session.commit()
     return redirect(url_for('.eapp'))
 
+
 @main.route('/enb', methods=['GET', 'POST'])
 def enb():
     enbs = Enb.query.order_by(Enb.ip).all()
@@ -252,8 +253,8 @@ def delete_enb(id):
 def add_ue():
     form = EditUEForm()
     if form.validate_on_submit():
-        ue = UE(imsi=form.imsi.data, op=form.op.data,
-                  ki=form.ki.data, frequency=Frequency.query.get(form.frequency.data))
+        ue = UE(ue_model=UeModel.query.get(form.model.data), imsi=form.imsi.data, imei=form.imei.data,
+                ki=form.ki.data, frequency=Frequency.query.get(form.frequency.data))
         db.session.add(ue)
         db.session.commit()
         flash('Add UE successfully')
@@ -276,16 +277,18 @@ def edit_ue(id):
     ue = UE.query.get_or_404(id)
     form = EditUEForm()
     if form.validate_on_submit():
+        ue.model = UeModel.query.get(form.model.data)
         ue.imsi = form.imsi.data
-        ue.op = form.op.data
+        ue.imei = form.imei.data
         ue.ki = form.ki.data
         ue.frequency = Frequency.query.get(form.frequency.data)
         db.session.add(ue)
         db.session.commit()
         flash('The enodeb has been updated')
         return redirect(url_for('.ue'))
+    form.model.data = ue.ue_model_id
     form.imsi.data = ue.imsi
-    form.op.data = ue.op
+    form.imei.data = ue.imei
     form.ki.data = ue.ki
     form.frequency.data = ue.frequency_id
     return render_template('add_ue.html', form=form)
@@ -297,6 +300,3 @@ def delete_ue(id):
     db.session.delete(ue)
     db.session.commit()
     return redirect(url_for('.ue'))
-
-
-

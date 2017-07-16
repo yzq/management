@@ -103,13 +103,34 @@ class Enb(db.Model):
         return '<Enb %r>' % self.ip
 
 
+class UeModel(db.Model):
+    __tablename__ = 'ue_models'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+    ues = db.relationship('UE', backref='ue_model', lazy='dynamic')
+
+    @staticmethod
+    def insert_models():
+        models = ['EP650', 'EP680', 'EP820']
+        for m in models:
+            model = UeModel.query.filter_by(name=m).first()
+            if model is None:
+                model = UeModel(name=m)
+            db.session.add(model)
+        db.session.commit()
+
+    def __repr__(self):
+        return '<Type %r>' % self.name
+
+
 class UE(db.Model):
     __tablename__ = 'ues'
     id = db.Column(db.Integer, primary_key=True)
     imsi = db.Column(db.String(32), unique=True)
     ki = db.Column(db.String(32))
-    op = db.Column(db.String(64))
+    imei = db.Column(db.String(64))
     frequency_id = db.Column(db.Integer, db.ForeignKey('frequency.id'))
+    ue_model_id = db.Column(db.Integer, db.ForeignKey('ue_models.id'))
 
 
 

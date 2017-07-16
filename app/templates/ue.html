@@ -9,8 +9,9 @@
 <div class="post-body">
     <table>
         <tr>
+            <th class="center">型号</th>
             <th class="center">IMSI</th>
-            <th class="center">OP</th>
+            <th class="center">IMEI</th>
             <th class="center">Ki</th>
             <th class="center">频段</th>
             <th class="center">编辑</th>
@@ -18,8 +19,9 @@
 
         {% for ue in ues %}
             <tr>
+                <td class="center">{{ ue.ue_model.name }} </td>
                 <td class="center">{{ ue.imsi }} </td>
-                <td class="center">{{ ue.op }}</td>
+                <td class="center">{{ ue.imei }}</td>
                 <td class="center">{{ ue.ki }} </td>
                 <td class="center">{{ ue.frequency.number }} </td>
                 <td>

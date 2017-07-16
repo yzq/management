@@ -2,7 +2,7 @@
 from flask_wtf import Form
 from wtforms import StringField, SelectField, SubmitField
 from wtforms.validators import Required, Length, ValidationError
-from app.models import Type, Element, Eapp, Ecns, Frequency
+from app.models import Type, Element, Eapp, Ecns, Frequency, UeModel
 
 
 class EditForm(Form):
@@ -88,8 +88,9 @@ class EditeNBForm(Form):
 
 
 class EditUEForm(Form):
+    model = SelectField(u'型号', coerce=int)
     imsi = StringField(u'IMSI', validators=[Required(), Length(1, 32)])
-    op = StringField(u'OP', validators=[Required(), Length(1, 64)])
+    imei = StringField(u'IMEI', validators=[Required(), Length(1, 64)])
     ki = StringField(u'Ki', validators=[Required(), Length(1, 64)])
     frequency = SelectField(u'频率', coerce=int)
     submit = SubmitField(u'提交')
@@ -98,3 +99,6 @@ class EditUEForm(Form):
         super(EditUEForm, self).__init__(*args, **kwargs)
         self.frequency.choices = [(frequency.id, frequency.number)
                                   for frequency in Frequency.query.order_by(Frequency.number).all()]
+
+        self.model.choices = [(model.id, model.name)
+                              for model in UeModel.query.order_by(UeModel.name).all()]
