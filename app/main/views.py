@@ -94,7 +94,7 @@ def ecns():
 @main.route('/edit-ecns/<int:id>', methods=['GET', 'POST'])
 def edit_ecns(id):
     ecns = Ecns.query.get_or_404(id)
-    form = EditeCNSForm(ecns)
+    form = EditeCNSForm()
     if form.validate_on_submit():
         ecns.ip = form.ip.data
         ecns.username = form.username.data
@@ -156,7 +156,7 @@ def add_eapp():
 @main.route('/edit-eapp/<int:id>', methods=['GET', 'POST'])
 def edit_eapp(id):
     eapp = Eapp.query.get_or_404(id)
-    form = EditeAPPForm(eapp)
+    form = EditeAPPForm()
     if form.validate_on_submit():
         eapp.mdc_ip = form.mdc_ip.data
         eapp.mdc_username = form.mdc_username.data

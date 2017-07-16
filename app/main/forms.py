@@ -20,10 +20,6 @@ class EditForm(Form):
                              for type in Type.query.order_by(Type.name).all()]
         self.usage.choices = [('simulation', u'模拟线'), ('real', u'真实线')]
 
-    def validate_ip(self, field):
-        if Element.query.filter_by(ip=field.data).first():
-            raise ValidationError("Ip already in use")
-
 
 class EditeCNSForm(Form):
     ip = StringField(u'维护 IP', validators=[Required(), Length(1, 32)])
@@ -33,15 +29,9 @@ class EditeCNSForm(Form):
     pc_ip = StringField(u'对接PC')
     submit = SubmitField(u'提交')
 
-    def __init__(self, ecns, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(EditeCNSForm, self).__init__(*args, **kwargs)
         self.usage.choices = [('simulation', u'模拟线'), ('real', u'真实线')]
-        self.ecns = ecns
-
-    def validate_ip(self, field):
-        if field.data != self.ecns.ip and \
-                Ecns.query.filter_by(ip=field.data).first():
-            raise ValidationError("Ip already in use")
 
 
 class EditeAPPForm(Form):
