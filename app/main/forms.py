@@ -22,7 +22,7 @@ class EditForm(Form):
 
 
 class EditeCNSForm(Form):
-    ip = StringField(u'维护 IP', validators=[Required(), Length(1, 32)])
+    ip = StringField(u'维护IP', validators=[Required(), Length(1, 32)])
     username = StringField(u'用户名', validators=[Required(), Length(1, 64)])
     password = StringField(u'密码', validators=[Required(), Length(1, 64)])
     usage = SelectField(u'环境')
