@@ -58,7 +58,7 @@ class Eapp(db.Model):
     udc_ip = db.Column(db.String(32), unique=True)
     udc_username = db.Column(db.String(64))
     udc_password = db.Column(db.String(64))
-    root_username = db.Column(db.String(64))
+    # root_username = db.Column(db.String(64))
     root_password = db.Column(db.String(64))
     # ubp_username = db.Column(db.String(64))
     ubp_password = db.Column(db.String(64))
