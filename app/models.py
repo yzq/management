@@ -97,6 +97,7 @@ class Enb(db.Model):
     password = db.Column(db.String(64))
     # status = db.Column(db.Boolean, default=False)
     frequency_id = db.Column(db.Integer, db.ForeignKey('frequency.id'))
+    enb_id = db.Column(db.String(32))
     cell_id1 = db.Column(db.String(32))
     cell_id2 = db.Column(db.String(32))
 

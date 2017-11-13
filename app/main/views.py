@@ -141,7 +141,7 @@ def add_eapp():
                     udc_ip=form.udc_ip.data,
                     udc_username=form.udc_username.data,
                     udc_password=form.udc_password.data,
-                    root_username=form.root_username.data,
+                    # root_username=form.root_username.data,
                     root_password=form.root_password.data,
                     # ubp_username=form.ubp_username.data,
                     ubp_password=form.ubp_password.data
@@ -164,7 +164,7 @@ def edit_eapp(id):
         eapp.udc_ip = form.udc_ip.data
         eapp.udc_username = form.udc_username.data
         eapp.udc_password = form.udc_password.data
-        eapp.root_username = form.root_username.data
+        # eapp.root_username = form.root_username.data
         eapp.root_password = form.root_password.data
         # eapp.ubp_username = form.ubp_username.data
         eapp.ubp_password = form.ubp_password.data
@@ -178,7 +178,7 @@ def edit_eapp(id):
     form.udc_ip.data = eapp.udc_ip
     form.udc_username.data = eapp.udc_username
     form.udc_password.data = eapp.udc_password
-    form.root_username.data = eapp.root_username
+    # form.root_username.data = eapp.root_username
     form.root_password.data = eapp.root_password
     # form.ubp_username.data = eapp.ubp_username
     form.ubp_password.data = eapp.ubp_password
@@ -209,7 +209,7 @@ def add_enb():
     if form.validate_on_submit():
         enb = Enb(ip=form.ip.data, username=form.username.data,
                   password=form.password.data, frequency=Frequency.query.get(form.frequency.data),
-                  cell_id1=form.cell_id1.data, cell_id2=form.cell_id2.data)
+                  enb_id=form.enb_id.data, cell_id1=form.cell_id1.data, cell_id2=form.cell_id2.data)
         db.session.add(enb)
         db.session.commit()
         flash('Add enodeb successfully')
@@ -226,6 +226,7 @@ def edit_enb(id):
         enb.username = form.username.data
         enb.password = form.password.data
         enb.frequency = Frequency.query.get(form.frequency.data)
+        enb.enb_id = form.enb_id.data
         enb.cell_id1 = form.cell_id1.data
         enb.cell_id2 = form.cell_id2.data
         db.session.add(enb)
@@ -236,6 +237,7 @@ def edit_enb(id):
     form.username.data = enb.username
     form.password.data = enb.password
     form.frequency.data = enb.frequency_id
+    form.enb_id.data = enb.enb_id
     form.cell_id1 = enb.cell_id1
     form.cell_id2 = enb.cell_id2
     return render_template('add_enb.html', form=form)
