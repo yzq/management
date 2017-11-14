@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 from app import create_app, db
-from app.models import Type, Element, Enb, Frequency, UeModel, UE
+from app.models import Type, Element, Enb, Frequency, UeModel, UE, Board
 from flask_script import Manager, Shell, Server
 from flask_migrate import Migrate, MigrateCommand
 
@@ -12,7 +12,7 @@ migrate = Migrate(app, db)
 
 def make_shell_context():
     return dict(app=app, db=db, Element=Element, Type=Type, Enb=Enb, Frequency=Frequency,
-                UE=UE, UeModel=UeModel)
+                UE=UE, UeModel=UeModel, Board=Board)
 
 
 manager.add_command("shell", Shell(make_context=make_shell_context))

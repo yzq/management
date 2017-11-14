@@ -89,6 +89,23 @@ class Frequency(db.Model):
         return '<Frequency %r>' % self.frequency
 
 
+class Board(db.Model):
+    __tablename__ = 'boards'
+    id = db.Column(db.Integer, primary_key=True)
+    board_model = db.Column(db.String(32), unique=True)
+    enbs = db.relationship('Enb', backref='board', lazy='dynamic')
+
+    @staticmethod
+    def insert_models():
+        models = ['L', 'U']
+        for m in models:
+            model = Board.query.filter_by(board_model=m).first()
+            if model is None:
+                model = Board(board_model=m)
+            db.session.add(model)
+        db.session.commit()
+
+
 class Enb(db.Model):
     __tablename__ = 'enbs'
     id = db.Column(db.Integer, primary_key=True)
@@ -96,6 +113,7 @@ class Enb(db.Model):
     username = db.Column(db.String(64))
     password = db.Column(db.String(64))
     # status = db.Column(db.Boolean, default=False)
+    board_id = db.Column(db.Integer, db.ForeignKey('boards.id'))
     frequency_id = db.Column(db.Integer, db.ForeignKey('frequency.id'))
     enb_id = db.Column(db.String(32))
     cell_id1 = db.Column(db.String(32))

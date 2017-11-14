@@ -2,7 +2,7 @@ from flask import render_template, session, url_for, flash
 from werkzeug.utils import redirect
 
 from app.main.forms import EditForm, EditeCNSForm, EditeAPPForm, EditeNBForm, EditUEForm, EditPsUeForm
-from app.models import Element, Type, Ecns, Eapp, Frequency, Enb, UE, UeModel, PsUe
+from app.models import Element, Type, Ecns, Eapp, Frequency, Enb, UE, UeModel, PsUe, Board
 from . import main
 from .. import db
 
@@ -208,7 +208,8 @@ def add_enb():
     form = EditeNBForm()
     if form.validate_on_submit():
         enb = Enb(ip=form.ip.data, username=form.username.data,
-                  password=form.password.data, frequency=Frequency.query.get(form.frequency.data),
+                  password=form.password.data, board=Board.query.get(form.board.data),
+                  frequency=Frequency.query.get(form.frequency.data),
                   enb_id=form.enb_id.data, cell_id1=form.cell_id1.data, cell_id2=form.cell_id2.data)
         db.session.add(enb)
         db.session.commit()
@@ -225,6 +226,7 @@ def edit_enb(id):
         enb.ip = form.ip.data
         enb.username = form.username.data
         enb.password = form.password.data
+        enb.board = Board.query.get(form.board.data)
         enb.frequency = Frequency.query.get(form.frequency.data)
         enb.enb_id = form.enb_id.data
         enb.cell_id1 = form.cell_id1.data
@@ -237,6 +239,7 @@ def edit_enb(id):
     form.username.data = enb.username
     form.password.data = enb.password
     form.frequency.data = enb.frequency_id
+    form.board.data = enb.board_id
     form.enb_id.data = enb.enb_id
     form.cell_id1 = enb.cell_id1
     form.cell_id2 = enb.cell_id2
