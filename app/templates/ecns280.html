@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}eCNS280 环境信息{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h3>eCNS280</h3>
+</div>
+<div class="post-body">
+    <table>
+        <tr>
+            <th class="center">环境</th>
+            <th class="center">TSN IP</th>
+            <th class="center">TSN 用户名</th>
+            <th class="center">TSN 密码</th>
+            <th class="center">USN IP</th>
+            <th class="center">USN 用户名</th>
+            <th class="center">USN 密码</th>
+            <th class="center">UGW IP</th>
+            <th class="center">UGW 用户名</th>
+            <th class="center">UGW 密码</th>
+            <th class="center">对接PC</th>
+            <th class="center">编辑</th>
+        </tr>
+        {% if simu_num %}
+        <tr>
+            <td rowspan={{ simu_num+1 }}>模拟线</td>
+        </tr>
+        {% for ecns in simulation_ecns %}
+                <tr>
+                    <td class="center">{{ ecns.tsn_ip }} </td>
+                    <td class="center">{{ ecns.tsn_username }} </td>
+                    <td class="center">{{ ecns.tsn_password }} </td>
+                    <td class="center">{{ ecns.usn_ip }} </td>
+                    <td class="center">{{ ecns.usn_username }} </td>
+                    <td class="center">{{ ecns.usn_password }} </td>
+                    <td class="center">{{ ecns.ugw_ip }} </td>
+                    <td class="center">{{ ecns.ugw_username }} </td>
+                    <td class="center">{{ ecns.ugw_password }} </td>
+                    <td class="center">{{ ecns.pc_ip }} </td>
+                    <td>
+                        <a class="btn btn-link"
+                           href="{{ url_for('main.edit_ecns280', id=ecns.id) }}">Edit</a>
+                        <a class="btn btn-link"
+                           href="{{ url_for('main.delete_ecns280', id=ecns.id) }}">Delete</a>
+                     </td>
+                </tr>
+        {% endfor %}
+        {% endif %}
+
+        {% if real_num %}
+        <tr>
+            <td rowspan={{ real_num+1 }}>真实线</td>
+        </tr>
+        {% for ecns in real_ecns %}
+                <tr>
+                    <td class="center">{{ ecns.tsn_ip }} </td>
+                    <td class="center">{{ ecns.tsn_username }} </td>
+                    <td class="center">{{ ecns.tsn_password }} </td>
+                    <td class="center">{{ ecns.usn_ip }} </td>
+                    <td class="center">{{ ecns.usn_username }} </td>
+                    <td class="center">{{ ecns.usn_password }} </td>
+                    <td class="center">{{ ecns.ugw_ip }} </td>
+                    <td class="center">{{ ecns.ugw_username }} </td>
+                    <td class="center">{{ ecns.ugw_password }} </td>
+                    <td class="center">{{ ecns.pc_ip }} </td>
+                    <td>
+                        <a class="btn btn-link"
+                           href="{{ url_for('main.edit_ecns280', id=ecns.id) }}">Edit</a>
+                        <a class="btn btn-link"
+                           href="{{ url_for('main.delete_ecns280', id=ecns.id) }}">Delete</a>
+                     </td>
+                </tr>
+        {% endfor %}
+        {% endif %}
+    </table>
+    <div id="btn-add">
+        <a class="btn btn-primary" href="{{ url_for('main.add_ecns280') }}">Add</a>
+    </div>
+</div>
+
+{% endblock %}
