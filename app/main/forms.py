@@ -34,6 +34,25 @@ class EditeCNSForm(Form):
         self.usage.choices = [('simulation', u'模拟线'), ('real', u'真实线')]
 
 
+class EditeCNS280Form(Form):
+    tsn_ip = StringField(u'TSN IP', validators=[Required(), Length(1, 32)])
+    tsn_username = StringField(u'TSN 用户名', validators=[Required(), Length(1, 64)])
+    tsn_password = StringField(u'TSN 密码', validators=[Required(), Length(1, 64)])
+    usn_ip = StringField(u'USN IP', validators=[Required(), Length(1, 32)])
+    usn_username = StringField(u'USN 用户名', validators=[Required(), Length(1, 64)])
+    usn_password = StringField(u'USN 密码', validators=[Required(), Length(1, 64)])
+    ugw_ip = StringField(u'UGW IP', validators=[Required(), Length(1, 32)])
+    ugw_username = StringField(u'UGW 用户名', validators=[Required(), Length(1, 64)])
+    ugw_password = StringField(u'UGW 密码', validators=[Required(), Length(1, 64)])
+    usage = SelectField(u'环境')
+    pc_ip = StringField(u'对接 PC')
+    submit = SubmitField(u'提交')
+
+    def __init__(self, *args, **kwargs):
+        super(EditeCNS280Form, self).__init__(*args, **kwargs)
+        self.usage.choices = [('simulation', u'模拟线'), ('real', u'真实线')]
+
+
 class EditeAPPForm(Form):
     mdc_ip = StringField('MDC IP', validators=[Required(), Length(1, 32)])
     mdc_username = StringField(u'MDC 用户名', validators=[Required(), Length(1, 64)])
@@ -51,15 +70,15 @@ class EditeAPPForm(Form):
         super(EditeAPPForm, self).__init__(*args, **kwargs)
 
 
-    # def validate_mdc_ip(self, field):
-    #     if self.eapp.mdc_ip != field.data and \
-    #             Eapp.query.filter_by(mdc_ip=field.data).first():
-    #         raise ValidationError("MDC IP already in use")
-    #
-    # def validate_udc_ip(self, field):
-    #     if self.eapp.udc_ip != field.data and \
-    #             Eapp.query.filter_by(udc_ip=field.data).first():
-    #         raise ValidationError("UDC IP already in use")
+        # def validate_mdc_ip(self, field):
+        #     if self.eapp.mdc_ip != field.data and \
+        #             Eapp.query.filter_by(mdc_ip=field.data).first():
+        #         raise ValidationError("MDC IP already in use")
+        #
+        # def validate_udc_ip(self, field):
+        #     if self.eapp.udc_ip != field.data and \
+        #             Eapp.query.filter_by(udc_ip=field.data).first():
+        #         raise ValidationError("UDC IP already in use")
 
 
 class EditeNBForm(Form):
@@ -80,6 +99,7 @@ class EditeNBForm(Form):
 
         self.board.choices = [(board.id, board.board_model)
                               for board in Board.query.order_by(Board.board_model).all()]
+
 
 class EditUEForm(Form):
     model = SelectField(u'型号', coerce=int)

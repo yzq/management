@@ -49,6 +49,22 @@ class Ecns(db.Model):
         return '<Ecns %r>' % self.name
 
 
+class Ecns280(db.Model):
+    __tablename__ = 'ecns280s'
+    id = db.Column(db.Integer, primary_key=True)
+    tsn_ip = db.Column(db.String(32), unique=True)
+    tsn_username = db.Column(db.String(64))
+    tsn_password = db.Column(db.String(64))
+    usn_ip = db.Column(db.String(32), unique=True)
+    usn_username = db.Column(db.String(64))
+    usn_password = db.Column(db.String(64))
+    ugw_ip = db.Column(db.String(32), unique=True)
+    ugw_username = db.Column(db.String(64))
+    ugw_password = db.Column(db.String(64))
+    usage = db.Column(db.String(32))
+    pc_ip = db.Column(db.String(32))
+
+
 class Eapp(db.Model):
     __tablename__ = 'eapp'
     id = db.Column(db.Integer, primary_key=True)

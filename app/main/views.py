@@ -1,8 +1,8 @@
 from flask import render_template, session, url_for, flash
 from werkzeug.utils import redirect
 
-from app.main.forms import EditForm, EditeCNSForm, EditeAPPForm, EditeNBForm, EditUEForm, EditPsUeForm
-from app.models import Element, Type, Ecns, Eapp, Frequency, Enb, UE, UeModel, PsUe, Board
+from app.main.forms import EditForm, EditeCNSForm, EditeAPPForm, EditeNBForm, EditUEForm, EditPsUeForm, EditeCNS280Form
+from app.models import Element, Type, Ecns, Eapp, Frequency, Enb, UE, UeModel, PsUe, Board, Ecns280
 from . import main
 from .. import db
 
@@ -119,6 +119,77 @@ def delete_ecns(id):
     db.session.delete(ecns)
     db.session.commit()
     return redirect(url_for('.ecns'))
+
+
+@main.route('/add-ecns280', methods=['GET', 'POST'])
+def add_ecns280():
+    form = EditeCNS280Form()
+    if form.validate_on_submit():
+        ecns280 = Ecns280(tsn_ip=form.tsn_ip.data, tsn_username=form.tsn_username.data,
+                          tsn_password=form.tsn_password.data,
+                          usn_ip=form.usn_ip.data, usn_username=form.usn_username.data,
+                          usn_password=form.usn_password.data,
+                          ugw_ip=form.ugw_ip.data, ugw_username=form.ugw_username.data,
+                          ugw_password=form.ugw_password.data,
+                          usage=form.usage.data, pc_ip=form.pc_ip.data)
+        db.session.add(ecns280)
+        db.session.commit()
+        flash('Add eCNS280 successfully')
+        return redirect(url_for('.ecns280'))
+    return render_template('add_ecns280.html', form=form)
+
+
+@main.route('/ecns280', methods=['GET', 'POST'])
+def ecns280():
+    simulation_ecns = Ecns280.query.filter(Ecns280.usage == 'simulation').all()
+    simulation_num = len(simulation_ecns)
+    real_ecns = Ecns280.query.filter(Ecns280.usage == 'real').all()
+    real_num = len(real_ecns)
+    return render_template('ecns280.html', simu_num=simulation_num, real_num=real_num,
+                           simulation_ecns=simulation_ecns,
+                           real_ecns=real_ecns)
+
+
+@main.route('/edit-ecns280/<int:id>', methods=['GET', 'POST'])
+def edit_ecns280(id):
+    ecns280 = Ecns280.query.get_or_404(id)
+    form = EditeCNS280Form()
+    if form.validate_on_submit():
+        ecns280.tsn_ip = form.tsn_ip.data
+        ecns280.tsn_username = form.tsn_username.data
+        ecns280.tsn_password = form.tsn_password.data
+        ecns280.usn_ip = form.usn_ip.data
+        ecns280.usn_username = form.usn_username.data
+        ecns280.usn_password = form.usn_password.data
+        ecns280.ugw_ip = form.ugw_ip.data
+        ecns280.ugw_username = form.ugw_username.data
+        ecns280.ugw_password = form.ugw_password.data
+        ecns280.usage = form.usage.data
+        ecns280.pc_ip = form.pc_ip.data
+        db.session.add(ecns280)
+        db.session.commit()
+        flash('The eCNS280 has been updated')
+        return redirect(url_for('.ecns280'))
+    form.tsn_ip.data = ecns280.tsn_ip
+    form.tsn_username.data = ecns280.tsn_username
+    form.tsn_password.data = ecns280.tsn_password
+    form.usn_ip.data = ecns280.usn_ip
+    form.usn_username.data = ecns280.usn_username
+    form.usn_password.data = ecns280.usn_password
+    form.ugw_ip.data = ecns280.ugw_ip
+    form.ugw_username.data = ecns280.ugw_username
+    form.ugw_password.data = ecns280.ugw_password
+    form.usage.data = ecns280.usage
+    form.pc_ip.data = ecns280.pc_ip
+    return render_template('add_ecns280.html', form=form)
+
+
+@main.route('/delete-ecns280/<int:id>', methods=['GET', 'POST'])
+def delete_ecns280(id):
+    ecns280 = Ecns280.query.get_or_404(id)
+    db.session.delete(ecns280)
+    db.session.commit()
+    return redirect(url_for('.ecns280'))
 
 
 @main.route('/eapp', methods=['GET', 'POST'])
